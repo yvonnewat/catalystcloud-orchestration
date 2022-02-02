@@ -1,0 +1,11 @@
+[Unit]
+description="A service that starts the Nextcloud container"
+
+[Service]
+User=root
+WorkingDirectory=/nextcloud
+ExecStart=/bin/bash /systemd/bash-scripts/nextcloud-start.sh
+Restart=always
+
+[Install]
+WantedBy=network-online.target
