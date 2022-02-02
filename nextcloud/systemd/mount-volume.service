@@ -8,5 +8,5 @@ ExecStart=/bin/bash /mount-volume.sh
 Restart=always
 
 [Install]
-Before=format-volume.service
+After=format-volume.service
 WantedBy=local-fs.target
