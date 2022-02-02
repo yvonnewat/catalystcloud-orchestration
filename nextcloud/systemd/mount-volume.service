@@ -4,7 +4,7 @@ description="A service that mounts a volume on the virtual machine"
 [Service]
 User=root
 WorkingDirectory=/nextcloud-terraform
-ExecStart=/bin/bash /mount-volume.sh
+ExecStart=/bin/bash /bash-scripts/mount-volume.sh
 Restart=always
 
 [Install]
