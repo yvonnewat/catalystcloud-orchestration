@@ -1,12 +1,17 @@
 [Unit]
-description="A service that starts the Nextcloud container"
+Description="A service that starts the Nextcloud container"
+After=acme-companion.service
 
 [Service]
-User=root
-WorkingDirectory=/nextcloud
-ExecStart=/bin/bash /systemd/bash-scripts/nextcloud-start.sh
-Restart=always
+ExecStart=docker run \
+ --name=nextcloud \
+ -e TZ=NZ \
+ -p 8080:80 \
+ --env "VIRTUAL_HOST=$host_name.$domain_name" \
+ --env "LETSENCRYPT_HOST=$host_name.$domain_name"  \
+ --volume /data/www/html:/var/www/html \
+ --restart unless-stopped \
+ nextcloud
 
 [Install]
-After=acme-companion.service
 WantedBy=docker.service
