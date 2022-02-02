@@ -8,4 +8,5 @@ ExecStart=/bin/bash /systemd/bash-scripts/nextcloud-start.sh
 Restart=always
 
 [Install]
-WantedBy=network-online.target
+After=acme-companion.service
+WantedBy=docker.service
