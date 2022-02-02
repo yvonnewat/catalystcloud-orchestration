@@ -1,0 +1,9 @@
+[Unit]
+Description="A service that creates a file system on the volume, if it does not have an existing file system"
+After=local-fs-pre.target
+Before=local-fs.target
+
+[Service]
+ExecStart=/usr/local/sbin/format-volume.sh /dev/%i
+RemainAfterExit=yes
+Type=oneshot
