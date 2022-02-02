@@ -1,0 +1,12 @@
+[Unit]
+description="A service that mounts a volume on the virtual machine"
+
+[Service]
+User=root
+WorkingDirectory=/nextcloud-terraform
+ExecStart=/bin/bash /mount-volume.sh
+Restart=always
+
+[Install]
+Before=format-volume.service
+WantedBy=local-fs.target
