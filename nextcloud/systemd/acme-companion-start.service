@@ -1,0 +1,11 @@
+[Unit]
+description="A service that starts the NGINX acme companion container"
+
+[Service]
+User=root
+WorkingDirectory=/nextcloud
+ExecStart=/bin/bash /systemd/bash-scripts/acme-companion-start.sh
+Restart=always
+
+[Install]
+WantedBy=network-online.target
