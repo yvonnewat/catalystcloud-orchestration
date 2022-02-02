@@ -8,4 +8,5 @@ ExecStart=/bin/bash /systemd/bash-scripts/acme-companion-start.sh
 Restart=always
 
 [Install]
-WantedBy=network-online.target
+After=nginx-start.service
+WantedBy=docker.service
