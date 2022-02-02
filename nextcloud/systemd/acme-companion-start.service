@@ -1,12 +1,15 @@
 [Unit]
-description="A service that starts the NGINX acme companion container"
+Description="A service that starts the NGINX acme companion container"
+
 
 [Service]
-User=root
-WorkingDirectory=/nextcloud
-ExecStart=/bin/bash /systemd/bash-scripts/acme-companion-start.sh
-Restart=always
+ExecStart=/usr/bin/docker run \
+ --name nginx-proxy-acme \
+ --volumes-from nginx-proxy \
+ --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+ --volume acme:/etc/acme.sh \
+ --env "DEFAULT_EMAIL=admin@$domain_name" \
+ nginxproxy/acme-companion
 
 [Install]
-After=nginx-start.service
 WantedBy=docker.service
