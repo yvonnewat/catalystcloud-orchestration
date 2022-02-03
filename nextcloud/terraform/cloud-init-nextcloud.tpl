@@ -15,7 +15,7 @@ runcmd:
   - cd /etc/systemd/system
   - cp /nextcloud-terraform/nextcloud/systemd /etc/systemd/system
   - systemctl daemon-reload 
-  - systemctl enable format-volume@vdb.service data.mount nginx-start.service acme-companion-start@${ domain_name }.service nextcloud-start@{ host_name }${ domain_name }.service
+  - systemctl enable format-volume@vdb.service data.mount nginx-start.service acme-companion-start@${ domain_name }.service nextcloud-start@{ host_name }.${ domain_name }.service
   - systemctl start --no-block format-volume@.service data.mount nginx-start.service acme-companion-start.service nextcloud-start.service
   - touch /deploy-complete
 apt:
