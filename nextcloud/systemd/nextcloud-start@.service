@@ -7,8 +7,8 @@ ExecStart=/usr/bin/docker run \
  --name=nextcloud \
  -e TZ=NZ \
  -p 8080:80 \
- --env "VIRTUAL_HOST=$host_name.$domain_name" \
- --env "LETSENCRYPT_HOST=$host_name.$domain_name"  \
+ --env "VIRTUAL_HOST=%i" \
+ --env "LETSENCRYPT_HOST=%i"  \
  --volume /data/www/html:/var/www/html \
  --restart unless-stopped \
  nextcloud
