@@ -8,7 +8,7 @@ ExecStart=/usr/bin/docker run \
  --volumes-from nginx-proxy \
  --volume /var/run/docker.sock:/var/run/docker.sock:ro \
  --volume acme:/etc/acme.sh \
- --env "DEFAULT_EMAIL=admin@$domain_name" \
+ --env "DEFAULT_EMAIL=admin@%i" \
  nginxproxy/acme-companion
 
 [Install]
