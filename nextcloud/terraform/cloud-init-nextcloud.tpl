@@ -7,7 +7,8 @@ packages:
   - containerd.io
   
 write_files:
-  - path: /etc/system/systemd/format-volume@.service
+  - path: /etc/systemd/system/format-volume@.service
+    permissions: '0644'
     content: |
       [Unit]
       Description="A service that creates a file system on the volume, if it does not have an existing file system"
@@ -21,7 +22,8 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target  
-  - path: /etc/system/systemd/data-mount
+  - path: /etc/systemd/system/data.mount
+    permissions: '0644'
     content: |
       [Unit]
       Description="A service that mounts a volume on the virtual machine"
@@ -35,7 +37,8 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target   
-  - path: /etc/system/systemd/nginx-start.service   
+  - path: /etc/systemd/system/nginx-start.service
+    permissions: '0644'   
     content: |
       [Unit]
       Description="A service that starts the NGINX container"
@@ -55,7 +58,8 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target  
-  - path: /etc/system/systemd/acme-companion-start@.service
+  - path: /etc/systemd/system/acme-companion-start@.service
+    permissions: '0644'
     content: |
       [Unit]
       Description="A service that starts the NGINX acme companion container"
@@ -72,7 +76,8 @@ write_files:
 
       [Install]
       WantedBy=multi-user.target  
-  - path: /etc/system/systemd/nextcloud-start@.service
+  - path: /etc/systemd/system/nextcloud-start@.service
+    permissions: '0644'
     content: |
       [Unit]
       Description="A service that starts the Nextcloud container"
@@ -92,6 +97,7 @@ write_files:
       [Install]
       WantedBy=multi-user.target   
   - path: /setup/configure-nginx.sh
+    permissions: '0755'
     content: |
        #!/bin/bash
 
@@ -99,28 +105,27 @@ write_files:
 
        # Create custom nginx proxy configuration
        echo "client_max_body_size $file_upload_size;" > /tmp/proxy.conf
-       chmod 666 /tmp/proxy.conf  # Change file permissions   
+       chmod 666 /tmp/proxy.conf  # Change file permissions       
 runcmd:
-  - [ cd /setup ]
-  - [ curl -fsSL $ddns_script_url > /setup/ddns-script.sh ]
-  - [ chmod +x ddns-script.sh ]
-  - [ ./ddns-script $host_name $domain_name $ip_address $ddns_password ]
-  - [ ./configure-nginx.sh $file_upload_size ]
-  - [ cd ~ ]
-  - [ cd /etc/systemd/system ]
-  - [ chmod 0755 format-volume@.service data.mount nginx-start.service acme-companion-start@.service nextcloud-start@.service ]
-  - [ systemctl daemon-reload ]
-  - [ systemctl enable format-volume@vdb.service ]
-  - [ systemctl enable data.mount ]
-  - [ systemctl enable nginx-start.service ]
-  - [ systemctl enable acme-companion-start@$domain_name.service ] 
-  - [ systemctl enable nextcloud-start@$host_name.$domain_name.service ]
-  - [ systemctl start format-volume@vdb.service ]
-  - [ systemctl start data.mount ]
-  - [ systemctl start --no-block nginx-start.service ] 
-  - [ systemctl start --no-block acme-companion-start@$domain_name.service ] 
-  - [ systemctl start --no-block nextcloud-start@$host_name.$domain_name.service ]
-  - [ touch /deploy-complete ]
+  - [ wget, $ddns_script_url ]
+  - [ mv, ddns-update.sh, /setup ]
+  - [ chmod, +x, /setup/ddns-update.sh ]
+  - [ .//setup/ddns-update.sh, $host_name, $domain_name, $(ec2metadata --public-ipv4), $ddns_password ]
+  - [ .//setup/configure-nginx.sh, $file_upload_size ]
+  - [ cd, /root ]
+  - [ cd, /etc/systemd/system ]
+  - [ systemctl, daemon-reload ]
+  - [ systemctl, enable, format-volume@.service ]
+  - [ systemctl, enable, data.mount ]
+  - [ systemctl, enable, nginx-start.service ]
+  - [ systemctl, enable, acme-companion-start@.service ] 
+  - [ systemctl, enable, nextcloud-start@.service ]
+  - [ systemctl, start, format-volume@vdb.service ]
+  - [ systemctl, start, data.mount ]
+  - [ systemctl, start, --no-block, nginx-start.service ] 
+  - [ systemctl, start, --no-block, acme-companion-start@$domain_name .service ]  
+  - [ systemctl, start, --no-block, nextcloud-start@$host_name.$domain_name.service ]
+  - [ touch, /deploy-complete ]
 apt:
   sources:
     docker:
